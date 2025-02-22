@@ -16,7 +16,7 @@ O projeto foi desenvolvido pelos alunos:
 - **Aureo Dantas**
 - **Guilherme Fidencio**
 - **Guilherme Xavier**
-- **Derick Gustavo**
+- **Derick Ferreira**
 
 ## 🎯 Objetivo
 
