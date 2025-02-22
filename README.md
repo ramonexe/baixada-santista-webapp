@@ -40,11 +40,11 @@ Certifique-se de ter instalado em sua máquina:
 ### ▶️ Passo a Passo
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git
+git clone https://github.com/ramonexe/baixada-santista-webapp.git
 ```
 2. **Acesse o diretório do projeto**
 ```bash
-cd NOME_DO_REPOSITORIO
+cd baixada-santista-webapp
 ```
 3. **Instale as dependências**
 ```bash
@@ -60,7 +60,7 @@ yarn dev
 ```
 5. **Acesse no navegador**
 ```
-http://localhost:5173/
+http://localhost:3000/
 ```
 
 ## 📌 Contribuição
