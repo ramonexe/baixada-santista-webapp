@@ -13,8 +13,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/entrar" element={<SignIn />} />
+        <Route path="/cadastrar" element={<SignUp />} />
         <Route path="/admin" element={<AdminPanel />} >
           <Route path="usuarios" element={<ListaUsuarios />} />
           {/* AUREO PODE COLOCAR OUTRA ROTA PARA O COMPONENTE DE LISTA DE PRODUTOS AQUI!
