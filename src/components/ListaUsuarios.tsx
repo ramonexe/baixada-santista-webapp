@@ -11,6 +11,9 @@ interface User {
   id: number;
   nickname: string;
   email: string;
+  senha: string;
+  senhaNova: string;
+  senhaConfirmacao: string;
   role: string;
   ativo: boolean;
 }
@@ -25,6 +28,7 @@ const ListaUsuarios: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const users = await listarUsuarios();
+        console.log(users);
         setUsers(users);
       } catch (error) {
         console.error('Error listing users:', error);
@@ -48,11 +52,18 @@ const ListaUsuarios: React.FC = () => {
   const handleSave = async () => {
     if (selectedUser) {
       try {
+        if (selectedUser.senhaNova !== selectedUser.senhaConfirmacao) {
+          setErrorMessage('As senhas não coincidem.');
+          return;
+        }
+
         await axiosInstance.put(`/usuario/editar/${selectedUser.id}`, {
           nickname: selectedUser.nickname,
           email: selectedUser.email,
-          role: selectedUser.role,
           cpf: selectedUser.cpf,
+          senha: selectedUser.senha,
+          senhaNova: selectedUser.senhaNova,
+          role: selectedUser.role,
           ativo: selectedUser.ativo,
         });
         handleCloseModal();
@@ -106,8 +117,8 @@ const ListaUsuarios: React.FC = () => {
             <h2>Editar Usuário</h2>
             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             <label>
-              Nickname:
-              <input
+            <p>Nickname:</p>
+              <StyledInput
                 type="text"
                 value={selectedUser.nickname}
                 onChange={(e) =>
@@ -116,8 +127,9 @@ const ListaUsuarios: React.FC = () => {
               />
             </label>
             <label>
-              Email:
-              <input
+            <p>Email:</p>
+              <StyledInput
+                disabled
                 type="email"
                 value={selectedUser.email}
                 onChange={(e) =>
@@ -126,8 +138,8 @@ const ListaUsuarios: React.FC = () => {
               />
             </label>
             <label>
-              CPF:
-              <input
+            <p>CPF:</p>
+              <StyledInput
                 type="cpf"
                 value={selectedUser.cpf}
                 onChange={(e) =>
@@ -136,7 +148,31 @@ const ListaUsuarios: React.FC = () => {
               />
             </label>
             <label>
-              Role:
+            <p>Alterar senha:</p>
+              <StyledInput
+                type="password"
+                placeholder="Senha atual"
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, senha: e.target.value })
+                }
+              />
+              <StyledInput
+                type="password"
+                placeholder="Nova senha"
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, senhaNova: e.target.value })
+                }
+              />
+              <StyledInput
+                type="password"
+                placeholder='Confirmar nova senha'
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, senhaConfirmacao: e.target.value })
+                }
+              />
+            </label>
+            <label>
+            <p>Cargo:</p>
               <select
                 value={selectedUser.role}
                 onChange={(e) =>
@@ -194,6 +230,14 @@ const Container = styled.div`
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: ${({ theme }) => theme.colors.text};
+`;
+
+const StyledInput = styled.input`
+  width: 95%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
 `;
 
 const ItemList = styled.div`
@@ -280,6 +324,8 @@ const EditIcon = styled(Edit)`
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
   gap: 1rem;
 `;
 

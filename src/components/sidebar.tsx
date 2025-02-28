@@ -13,7 +13,7 @@ const Sidebar = () => {
 
   const handleNavigate = (path: string) => {
     navigate(path);
-    setIsOpen(false); // Fechar o sidebar ao navegar
+    setIsOpen(false);
   };
 
   return (

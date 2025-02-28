@@ -19,3 +19,13 @@ export const listarUsuarios = async () => {
         throw error;
     }
 };
+
+export const authUser = async (data: any) => {
+    try {
+        const response = await axiosInstance.post('/auth', data);
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao autenticar usuário:', error);
+        throw error;
+    }
+}

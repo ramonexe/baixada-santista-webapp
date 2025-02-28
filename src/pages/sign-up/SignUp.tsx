@@ -15,6 +15,7 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import InputMask from 'react-input-mask';
 import { cadastrarUsuario } from '../../services/axiosServices';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -67,10 +68,12 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [cpfError, setCpfError] = React.useState(false);
   const [cpfErrorMessage, setCpfErrorMessage] = React.useState('');
+  const navigate = useNavigate();
 
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
     const password = document.getElementById('password') as HTMLInputElement;
+    const passwordConfirm = document.getElementById('passwordconfirm') as HTMLInputElement;
     const name = document.getElementById('name') as HTMLInputElement;
     const cpf = document.getElementById('cpf') as HTMLInputElement;
 
@@ -78,7 +81,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Por favor insira um e-mail válido.');
       isValid = false;
     } else {
       setEmailError(false);
@@ -87,7 +90,16 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('A senha deve ter no mínimo 6 caracteres.');
+      isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage('');
+    }
+
+    if (password.value !== passwordConfirm.value) {
+      setPasswordError(true);
+      setPasswordErrorMessage('As senhas não coincidem.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -96,7 +108,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
     if (!name.value || name.value.length < 1) {
       setNameError(true);
-      setNameErrorMessage('Name is required.');
+      setNameErrorMessage('Nome é obrigatório.');
       isValid = false;
     } else {
       setNameError(false);
@@ -138,6 +150,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     try {
       const response = await cadastrarUsuario(data);
       console.log('Usuário cadastrado com sucesso:', response);
+      navigate('/sign-in');
     } catch (error) {
       if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
         setEmailError(true);
@@ -162,7 +175,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign up
+            Cadastrar usuário
           </Typography>
           <Box
             component="form"
@@ -170,14 +183,14 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Username</FormLabel>
+              <FormLabel htmlFor="name">Nome</FormLabel>
               <TextField
                 autoComplete="name"
                 name="name"
                 required
                 fullWidth
                 id="name"
-                placeholder="Jon"
+                placeholder="Seu Nome"
                 error={nameError}
                 helperText={nameErrorMessage}
                 color={nameError ? 'error' : 'primary'}
@@ -189,7 +202,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 required
                 fullWidth
                 id="email"
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
                 name="email"
                 autoComplete="email"
                 variant="outlined"
@@ -220,14 +233,29 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
               </InputMask>
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="password">Senha</FormLabel>
               <TextField
                 required
                 fullWidth
                 name="password"
-                placeholder="••••••"
+                placeholder="Insira sua senha"
                 type="password"
                 id="password"
+                autoComplete="new-password"
+                variant="outlined"
+                error={passwordError}
+                helperText={passwordErrorMessage}
+                color={passwordError ? 'error' : 'primary'}
+              />
+            </FormControl>
+            <FormControl>
+              <TextField
+                required
+                fullWidth
+                name="password"
+                placeholder="Confirme sua senha"
+                type="password"
+                id="passwordconfirm"
                 autoComplete="new-password"
                 variant="outlined"
                 error={passwordError}
@@ -241,21 +269,21 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
               variant="contained"
               onClick={validateInputs}
             >
-              Sign up
+              Cadastrar
             </Button>
           </Box>
           <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>ou</Typography>
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+              Já tem uma conta?{' '}
               <Link
-                href="/sign-in"
+                href="/entrar"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign in
+                Entrar
               </Link>
             </Typography>
           </Box>
