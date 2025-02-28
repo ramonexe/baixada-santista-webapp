@@ -5,6 +5,8 @@ import { Edit } from '@mui/icons-material';
 import axiosInstance from '../api/axiosConfig';
 import Modal from 'react-modal';
 import Tooltip from '@mui/material/Tooltip';
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface User {
   cpf: string;
@@ -23,7 +25,8 @@ const ListaUsuarios: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
+  const [searchTerm, setSearchTerm] = useState('');
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -80,130 +83,167 @@ const ListaUsuarios: React.FC = () => {
     }
   };
 
+  const filteredUsers = searchTerm
+    ? users.filter((user) =>
+      user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : users;
+
   return (
-    <Container>
-      <ItemList>
-        <Header>
-          <HeaderItem>Nickname</HeaderItem>
-          <HeaderItem>Email</HeaderItem>
-          <HeaderItem>Role</HeaderItem>
-          <HeaderItem>CPF</HeaderItem>
-          <HeaderItem>Ativo</HeaderItem>
-          <HeaderItem>Ações</HeaderItem>
-        </Header>
-        {users.map((user) => (
-          <Row key={user.id}>
-            <Cell data-label="Nickname">{user.nickname}</Cell>
-            <Cell data-label="Email">{user.email}</Cell>
-            <Cell data-label="Role">{user.role}</Cell>
-            <Cell data-label="CPF">{user.cpf}</Cell>
-            <Cell data-label="Ativo">{user.ativo ? 'Sim' : 'Não'}</Cell>
-            <Cell data-label="Ações">
-              <Tooltip title="Editar">
-                <EditIcon onClick={() => handleEditClick(user)} />
-              </Tooltip>
-            </Cell>
-          </Row>
-        ))}
-      </ItemList>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="Editar Usuário"
-        style={customStyles}
-      >
-        {selectedUser && (
-          <ModalContent>
-            <h2>Editar Usuário</h2>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-            <label>
-            <p>Nickname:</p>
-              <StyledInput
-                type="text"
-                value={selectedUser.nickname}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, nickname: e.target.value })
-                }
-              />
-            </label>
-            <label>
-            <p>Email:</p>
-              <StyledInput
-                disabled
-                type="email"
-                value={selectedUser.email}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, email: e.target.value })
-                }
-              />
-            </label>
-            <label>
-            <p>CPF:</p>
-              <StyledInput
-                type="cpf"
-                value={selectedUser.cpf}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, cpf: e.target.value })
-                }
-              />
-            </label>
-            <label>
-            <p>Alterar senha:</p>
-              <StyledInput
-                type="password"
-                placeholder="Senha atual"
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, senha: e.target.value })
-                }
-              />
-              <StyledInput
-                type="password"
-                placeholder="Nova senha"
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, senhaNova: e.target.value })
-                }
-              />
-              <StyledInput
-                type="password"
-                placeholder='Confirmar nova senha'
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, senhaConfirmacao: e.target.value })
-                }
-              />
-            </label>
-            <label>
-            <p>Cargo:</p>
-              <select
-                value={selectedUser.role}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, role: e.target.value })
-                }
-              >
-                <option value="ADMIN">ADMIN</option>
-                <option value="USER">USER</option>
-                <option value="STOCKIST">STOCKIST</option>
-              </select>
-            </label>
-            <label>
-              Ativo:
-              <input
-                type="checkbox"
-                checked={selectedUser.ativo}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, ativo: e.target.checked })
-                }
-              />
-            </label>
-            <ButtonContainer>
-              <button onClick={handleSave}>Salvar</button>
-              <button onClick={handleCloseModal}>Cancelar</button>
-            </ButtonContainer>
-          </ModalContent>
-        )}
-      </Modal>
-    </Container>
+    <>
+      <SearchBar>
+        <FontAwesomeIcon icon={faSearch} />
+        <input
+          type="text"
+          placeholder="Pesquisar por nome..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </SearchBar>
+      <Container>
+        <ItemList>
+          <Header>
+            <HeaderItem>Nickname</HeaderItem>
+            <HeaderItem>Email</HeaderItem>
+            <HeaderItem>Role</HeaderItem>
+            <HeaderItem>CPF</HeaderItem>
+            <HeaderItem>Ativo</HeaderItem>
+            <HeaderItem>Ações</HeaderItem>
+          </Header>
+          {filteredUsers.map((user) => (
+            <Row key={user.id}>
+              <Cell data-label="Nickname">{user.nickname}</Cell>
+              <Cell data-label="Email">{user.email}</Cell>
+              <Cell data-label="Role">{user.role}</Cell>
+              <Cell data-label="CPF">{user.cpf}</Cell>
+              <Cell data-label="Ativo">{user.ativo ? 'Sim' : 'Não'}</Cell>
+              <Cell data-label="Ações">
+                <Tooltip title="Editar">
+                  <EditIcon onClick={() => handleEditClick(user)} />
+                </Tooltip>
+              </Cell>
+            </Row>
+          ))}
+        </ItemList>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={handleCloseModal}
+          contentLabel="Editar Usuário"
+          style={customStyles}
+        >
+          {selectedUser && (
+            <ModalContent>
+              <h2>Editar Usuário</h2>
+              {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+              <label>
+                <p>Nickname:</p>
+                <StyledInput
+                  type="text"
+                  value={selectedUser.nickname}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, nickname: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                <p>Email:</p>
+                <StyledInput
+                  disabled
+                  type="email"
+                  value={selectedUser.email}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, email: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                <p>CPF:</p>
+                <StyledInput
+                  type="cpf"
+                  value={selectedUser.cpf}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, cpf: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                <p>Alterar senha:</p>
+                <StyledInput
+                  type="password"
+                  placeholder="Senha atual"
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, senha: e.target.value })
+                  }
+                />
+                <StyledInput
+                  type="password"
+                  placeholder="Nova senha"
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, senhaNova: e.target.value })
+                  }
+                />
+                <StyledInput
+                  type="password"
+                  placeholder='Confirmar nova senha'
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, senhaConfirmacao: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                <p>Cargo:</p>
+                <select
+                  value={selectedUser.role}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, role: e.target.value })
+                  }
+                >
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="USER">USER</option>
+                  <option value="STOCKIST">STOCKIST</option>
+                </select>
+              </label>
+              <label>
+                Ativo:
+                <input
+                  type="checkbox"
+                  checked={selectedUser.ativo}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, ativo: e.target.checked })
+                  }
+                />
+              </label>
+              <ButtonContainer>
+                <button onClick={handleSave}>Salvar</button>
+                <button onClick={handleCloseModal}>Cancelar</button>
+              </ButtonContainer>
+            </ModalContent>
+          )}
+        </Modal>
+      </Container>
+    </>
   );
 };
+
+const SearchBar = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.background};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  input {
+    border: none;
+    background: none;
+    margin-left: 10px;
+    color: ${(props) => props.theme.colors.text};
+    outline: none;
+    width: 100%;
+  }
+`;
 
 const customStyles = {
   content: {
@@ -228,7 +268,7 @@ const Container = styled.div`
   padding: 1rem;
   background-color: ${({ theme }) => theme.colors.background};
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.3);
   color: ${({ theme }) => theme.colors.text};
 `;
 
@@ -244,7 +284,7 @@ const ItemList = styled.div`
   grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -257,7 +297,7 @@ const Header = styled.div`
   padding: 0.5rem;
   border-bottom: 2px solid ${({ theme }) => theme.colors.secondary};
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -277,7 +317,7 @@ const Row = styled.div`
     background-color: ${({ theme }) => theme.colors.backgroundDark};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     grid-gap: 0.5rem;
     padding: 1rem
@@ -285,14 +325,19 @@ const Row = styled.div`
 `;
 
 const Cell = styled.div`
+  max-width: 200px;
   padding: 0.5rem;
   color: ${({ theme }) => theme.colors.text};
   position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: flex;
     justify-content: space-between;
     padding: 0rem;
+    max-width: 100%;
     font-size: 0.8rem;
     text-align: left;
     border-bottom: 2px solid ${({ theme }) => theme.colors.backgroundDark};
