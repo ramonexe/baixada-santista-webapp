@@ -1,8 +1,8 @@
 import axiosInstance from "../api/axiosConfig";
 
-export const cadastrarUsuario = async () => {
+export const cadastrarUsuario = async (data: any) => {
     try {
-        const response = await axiosInstance.post('/usuario/cadastrar');
+        const response = await axiosInstance.post('/usuario/cadastrar', data);
         return response.data;
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);

@@ -13,6 +13,8 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
+import InputMask from 'react-input-mask';
+import { cadastrarUsuario } from '../../services/axiosServices';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -63,11 +65,14 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [cpfError, setCpfError] = React.useState(false);
+  const [cpfErrorMessage, setCpfErrorMessage] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
     const password = document.getElementById('password') as HTMLInputElement;
     const name = document.getElementById('name') as HTMLInputElement;
+    const cpf = document.getElementById('cpf') as HTMLInputElement;
 
     let isValid = true;
 
@@ -98,21 +103,52 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       setNameErrorMessage('');
     }
 
+    if (!cpf.value || cpf.value.length < 1) {
+      setCpfError(true);
+      setCpfErrorMessage('CPF is required.');
+      isValid = false;
+    } else {
+      setCpfError(false);
+      setCpfErrorMessage('');
+    }
+
     return isValid;
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!validateInputs()) {
       return;
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    const nickname = (document.getElementById('name') as HTMLInputElement).value;
+    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const cpf = (document.getElementById('cpf') as HTMLInputElement).value;
+    const senha = (document.getElementById('password') as HTMLInputElement).value;
+
+    const data = {
+      nickname,
+      email,
+      cpf,
+      senha,
+      role : 'user',
+    };
+
+    try {
+      const response = await cadastrarUsuario(data);
+      console.log('Usuário cadastrado com sucesso:', response);
+    } catch (error) {
+      if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
+        setEmailError(true);
+        setEmailErrorMessage('Email já cadastrado.');
+      } else if ((error as any).response && (error as any).response.data === 'CPF já cadastrado') {
+        setCpfError(true);
+        setCpfErrorMessage('CPF já cadastrado.');
+      } else {
+        console.error('Erro ao cadastrar usuário:', error);
+      }
+    }
   };
 
   return (
@@ -161,6 +197,27 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 helperText={emailErrorMessage}
                 color={passwordError ? 'error' : 'primary'}
               />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="cpf">CPF</FormLabel>
+              <InputMask
+                mask="999.999.999-99"
+              >
+                {() => (
+                  <TextField
+                    required
+                    fullWidth
+                    id="cpf"
+                    placeholder="000.000.000-00"
+                    name="cpf"
+                    autoComplete="cpf"
+                    variant="outlined"
+                    error={cpfError}
+                    helperText={cpfErrorMessage}
+                    color={cpfError ? 'error' : 'primary'}
+                  />
+                )}
+              </InputMask>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="password">Password</FormLabel>
