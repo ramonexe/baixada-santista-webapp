@@ -1,21 +1,32 @@
 import { List } from '@mui/icons-material';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
-    return (
-        <Wrapper>
-            <Title>Admin Panel</Title>
-            <Item><List />Listar Produtos</Item>
-            <Item><List />Listar Usuários</Item>
-        </Wrapper>
-    );
+  const navigate = useNavigate();
+
+  const handleListarUsuarios = async () => {
+    navigate('/admin/usuarios');
+  };
+
+  const handleListarProdutos = async () => {
+    navigate('/admin/produtos');
+  };
+
+  return (
+    <Wrapper>
+      <Title>Admin Panel</Title>
+      <Item onClick={handleListarProdutos}><List />Listar Produtos</Item>
+      <Item onClick={handleListarUsuarios}><List />Listar Usuários</Item>
+    </Wrapper>
+  );
 };
 
 const Title = styled.h1`
-    color: ${({ theme }) => theme.text};
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    gap: 0.5rem;
+  color: ${({ theme }) => theme.text};
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
 `;
 
 const Item = styled.div`
@@ -31,16 +42,13 @@ const Item = styled.div`
   font-weight: 800;
   gap: 0.5rem;
 
-
   &:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
   }
 `;
 
 const Wrapper = styled.div`
-  position: fixed;
-  left: 0;
-  top: 0;
+  user-select: none;
   height: 100%;
   width: 250px;
   display: flex;
@@ -50,7 +58,7 @@ const Wrapper = styled.div`
   gap: 1rem;
   padding: 1rem;
   background-color: #f0f0f0;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 `;
 
 export default Sidebar;
