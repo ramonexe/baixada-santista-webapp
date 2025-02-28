@@ -118,11 +118,9 @@ const ListaUsuarios: React.FC = () => {
               <Cell data-label="CPF">{user.cpf}</Cell>
               <Cell data-label="Ativo">{user.ativo ? 'Sim' : 'Não'}</Cell>
               <Cell data-label="Ações">
-                {user.id !== loggedInUserId && (
-                  <Tooltip title="Editar">
-                    <EditIcon onClick={() => handleEditClick(user)} />
-                  </Tooltip>
-                )}
+                <Tooltip title="Editar">
+                  <EditIcon onClick={() => handleEditClick(user)} />
+                </Tooltip>
               </Cell>
             </Row>
           ))}
@@ -192,6 +190,7 @@ const ListaUsuarios: React.FC = () => {
                   }
                 />
               </label>
+              {selectedUser.id !== loggedInUserId && (
               <label>
                 <p>Cargo:</p>
                 <select
@@ -205,6 +204,7 @@ const ListaUsuarios: React.FC = () => {
                   <option value="STOCKIST">STOCKIST</option>
                 </select>
               </label>
+              )}
               <label>
                 Ativo:
                 <input

@@ -28,8 +28,6 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminPanel />} >
                 <Route path="usuarios" element={<ListaUsuarios />} />
-                {/* AUREO PODE COLOCAR OUTRA ROTA PARA O COMPONENTE DE LISTA DE PRODUTOS AQUI!
-                OS BOTÕES DO SIDEBAR JÁ FUNCIONAM. AI NO COMPONENTE SÓ CHAMAR O GET NO AXIOSSERVICE*/}
               </Route>
             </Route>
           </Routes>

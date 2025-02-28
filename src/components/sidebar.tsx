@@ -12,7 +12,6 @@ const Sidebar = () => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       setUserRole(user.role || null);
-      console.log(user);
     } catch (error) {
       console.error('Erro ao fazer parse do JSON:', error);
       setUserRole(null);
@@ -104,6 +103,7 @@ const LogoutButton = styled.div`
   display: flex;
   text-align: center;
   margin-top: auto;
+  margin-bottom: 1.5rem;
   width: 100%;
   color: ${({ theme }) => theme.text};
   font-weight: 800;
