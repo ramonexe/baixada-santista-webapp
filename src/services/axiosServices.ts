@@ -22,7 +22,7 @@ export const listarUsuarios = async () => {
 
 export const authUser = async (data: any) => {
     try {
-        const response = await axiosInstance.post('/auth', data);
+        const response = await axiosInstance.post('/auth/login', data);
         return response.data;
     } catch (error) {
         console.error('Erro ao autenticar usuário:', error);

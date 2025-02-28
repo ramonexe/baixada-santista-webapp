@@ -1,11 +1,23 @@
-import { useState } from 'react';
-import { List as ListIcon, Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { List as ListIcon, Menu as MenuIcon, Close as CloseIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      setUserRole(user.role || null);
+      console.log(user);
+    } catch (error) {
+      console.error('Erro ao fazer parse do JSON:', error);
+      setUserRole(null);
+    }
+  }, []);
 
   const handleToggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -16,19 +28,29 @@ const Sidebar = () => {
     setIsOpen(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/entrar');
+  };
+
   return (
     <>
       <MenuButton onClick={handleToggleSidebar} $isOpen={isOpen}>
-        {isOpen ? <CloseIcon style={{ fontSize: '2rem' }}/> : <MenuIcon style={{ fontSize: '2rem' }}/>}
+        {isOpen ? <CloseIcon style={{ fontSize: '2rem' }} /> : <MenuIcon style={{ fontSize: '2rem' }} />}
       </MenuButton>
       <Wrapper $isOpen={isOpen}>
-        <Title>Admin Panel</Title>
-        <Item onClick={() => handleNavigate('/admin/produtos')}>
+        <Title>Baixada Santista</Title>
+        <Item onClick={() => handleNavigate('/produtos')}>
           <ListIcon />Listar Produtos
         </Item>
-        <Item onClick={() => handleNavigate('/admin/usuarios')}>
-          <ListIcon />Listar Usuários
-        </Item>
+        {userRole === 'ADMIN' && (
+          <Item onClick={() => handleNavigate('/admin/usuarios')}>
+            <ListIcon />Listar Usuários
+          </Item>
+        )}
+        <LogoutButton onClick={handleLogout}>
+          <ExitToAppIcon /> Sair
+        </LogoutButton>
       </Wrapper>
     </>
   );
@@ -70,6 +92,29 @@ const Item = styled.div`
 
   &:hover {
     background-color: #e0e0e0;
+  }
+`;
+
+const LogoutButton = styled.div`
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+  text-align: center;
+  margin-top: auto;
+  width: 100%;
+  color: ${({ theme }) => theme.text};
+  font-weight: 800;
+  gap: 0.5rem;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary};
+    color: white;
+  }
+  svg {
+    margin-right: 0.5rem;
   }
 `;
 

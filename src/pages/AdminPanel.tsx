@@ -1,11 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import Sidebar from '../components/sidebar';
 
 const AdminPanel = () => {
   return (
     <Container>
-      <Sidebar />
       <Content>
         <Outlet />
       </Content>

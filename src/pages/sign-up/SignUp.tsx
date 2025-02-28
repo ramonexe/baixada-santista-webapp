@@ -150,7 +150,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     try {
       const response = await cadastrarUsuario(data);
       console.log('Usuário cadastrado com sucesso:', response);
-      navigate('/sign-in');
+      navigate('/entrar');
     } catch (error) {
       if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
         setEmailError(true);
