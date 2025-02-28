@@ -26,12 +26,12 @@ const ListaUsuarios: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const loggedInUserId = JSON.parse(localStorage.getItem('user') || '{}').id;
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const users = await listarUsuarios();
-        console.log(users);
         setUsers(users);
       } catch (error) {
         console.error('Error listing users:', error);
@@ -190,6 +190,7 @@ const ListaUsuarios: React.FC = () => {
                   }
                 />
               </label>
+              {selectedUser.id !== loggedInUserId && (
               <label>
                 <p>Cargo:</p>
                 <select
@@ -203,6 +204,7 @@ const ListaUsuarios: React.FC = () => {
                   <option value="STOCKIST">STOCKIST</option>
                 </select>
               </label>
+              )}
               <label>
                 Ativo:
                 <input

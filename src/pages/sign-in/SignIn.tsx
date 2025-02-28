@@ -76,10 +76,9 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
     try {
       const response = await authUser(dataUser);
-      navigate('/admin');
+      navigate('/produtos');
       //guardar id do usuário no localstorage
-      localStorage.setItem('userId', response);
-      console.log(response);
+      localStorage.setItem('user', JSON.stringify(response));
     } catch (error) {}
   };
 
