@@ -141,6 +141,7 @@ const ListaUsuarios: React.FC = () => {
             <HeaderItem>Email</HeaderItem>
             <HeaderItem>Grupo</HeaderItem>
             <HeaderItem>CPF</HeaderItem>
+            <HeaderItem>Status</HeaderItem>
             <HeaderItem>Ações</HeaderItem>
           </Header>
           {filteredUsers.map((user) => (
