@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -62,6 +61,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -79,7 +79,9 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       navigate('/produtos');
       //guardar id do usuário no localstorage
       localStorage.setItem('user', JSON.stringify(response));
-    } catch (error) {}
+    } catch (error: any) {
+      setErrorMessage(error.response.data);
+    }
   };
 
   const validateInputs = () => {
@@ -167,6 +169,11 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
+            {errorMessage && (
+              <Typography color="error" variant="body2">
+                {errorMessage}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -175,18 +182,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             >
               Entrar
             </Button>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography sx={{ textAlign: 'center' }}>
-              Precisa de uma nova conta?{' '}
-              <Link
-                href="/cadastrar"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-              >
-                Cadastrar
-              </Link>
-            </Typography>
           </Box>
         </Card>
       </SignInContainer>

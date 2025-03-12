@@ -23,10 +23,10 @@ function App() {
         <Content>
           <Routes>
             <Route path="/entrar" element={<SignIn />} />
-            <Route path="/cadastrar" element={<SignUp />} />
-            <Route path="/produtos" element={<ListaProdutos />} />
+            <Route path="/" element={<ListaProdutos />} />
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminPanel />} >
+                <Route path="cadastrar" element={<SignUp />} />
                 <Route path="usuarios" element={<ListaUsuarios />} />
               </Route>
             </Route>

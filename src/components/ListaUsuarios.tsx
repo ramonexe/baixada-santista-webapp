@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 import Tooltip from '@mui/material/Tooltip';
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from '@mui/material/Link';
 
 interface User {
   cpf: string;
@@ -83,6 +84,30 @@ const ListaUsuarios: React.FC = () => {
     }
   };
 
+  const handleToggleActive = async (user: User) => {
+    try {
+      await axiosInstance.put(`/usuario/editar/${user.id}`, {
+        ...user,
+        ativo: !user.ativo,
+      });
+      const updatedUsers = await listarUsuarios();
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error('Erro ao alterar status do usuário:', error);
+    }
+  };
+
+  const mapRoleToLabel = (role: string) => {
+    switch (role) {
+      case 'ADMIN':
+        return 'ADMINISTRADOR';
+      case 'STOCKIST':
+        return 'ESTOQUISTA';
+      default:
+        return role;
+    }
+  };
+
   const filteredUsers = searchTerm
     ? users.filter((user) =>
       user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -91,32 +116,42 @@ const ListaUsuarios: React.FC = () => {
 
   return (
     <>
-      <SearchBar>
-        <FontAwesomeIcon icon={faSearch} />
-        <input
-          type="text"
-          placeholder="Pesquisar por nome..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </SearchBar>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
+        <LinkButton
+          href="/admin/cadastrar"
+          variant="body2"
+          sx={{ alignSelf: 'center' }}
+        >
+          Cadastrar
+        </LinkButton>
+        <SearchBar>
+          <FontAwesomeIcon icon={faSearch} />
+          <input
+            type="text"
+            placeholder="Pesquisar por nome..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </SearchBar>
+      </div>
       <Container>
         <ItemList>
           <Header>
-            <HeaderItem>Nickname</HeaderItem>
+            <HeaderItem>Nome</HeaderItem>
             <HeaderItem>Email</HeaderItem>
-            <HeaderItem>Role</HeaderItem>
+            <HeaderItem>Grupo</HeaderItem>
             <HeaderItem>CPF</HeaderItem>
-            <HeaderItem>Ativo</HeaderItem>
             <HeaderItem>Ações</HeaderItem>
           </Header>
           {filteredUsers.map((user) => (
             <Row key={user.id}>
-              <Cell data-label="Nickname">{user.nickname}</Cell>
+              <Cell data-label="Nome">{user.nickname}</Cell>
               <Cell data-label="Email">{user.email}</Cell>
-              <Cell data-label="Role">{user.role}</Cell>
+              <Cell data-label="Grupo">{mapRoleToLabel(user.role)}</Cell>
               <Cell data-label="CPF">{user.cpf}</Cell>
-              <Cell data-label="Ativo">{user.ativo ? 'Sim' : 'Não'}</Cell>
+              <Cell data-label="Status">
+                <ToggleButton onClick={() => handleToggleActive(user)}>{user.ativo ? 'Ativo' : 'Inativo'}</ToggleButton>
+                </Cell>
               <Cell data-label="Ações">
                 <Tooltip title="Editar">
                   <EditIcon onClick={() => handleEditClick(user)} />
@@ -191,30 +226,20 @@ const ListaUsuarios: React.FC = () => {
                 />
               </label>
               {selectedUser.id !== loggedInUserId && (
-              <label>
-                <p>Cargo:</p>
-                <select
-                  value={selectedUser.role}
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, role: e.target.value })
-                  }
-                >
-                  <option value="ADMIN">ADMIN</option>
-                  <option value="USER">USER</option>
-                  <option value="STOCKIST">STOCKIST</option>
-                </select>
-              </label>
+                <label>
+                  <p>Cargo:</p>
+                  <select
+                    value={selectedUser.role}
+                    onChange={(e) =>
+                      setSelectedUser({ ...selectedUser, role: e.target.value })
+                    }
+                  >
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="USER">USUÁRIO</option>
+                    <option value="STOCKIST">ESTOQUISTA</option>
+                  </select>
+                </label>
               )}
-              <label>
-                Ativo:
-                <input
-                  type="checkbox"
-                  checked={selectedUser.ativo}
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, ativo: e.target.checked })
-                  }
-                />
-              </label>
               <ButtonContainer>
                 <button onClick={handleSave}>Salvar</button>
                 <button onClick={handleCloseModal}>Cancelar</button>
@@ -227,6 +252,44 @@ const ListaUsuarios: React.FC = () => {
   );
 };
 
+const ToggleButton = styled.button`
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+  margin-left: 0.5rem;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.secondary};
+    transition: color 0.3s ease-in-out;
+    transform: scale(1.1);
+  }
+`;
+
+const LinkButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.background};
+  border-radius: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+    text-decoration: none;
+  }
+
+  &:visited, &:link, &:active {
+    color: ${({ theme }) => theme.colors.background};
+  }
+`;
+
 const SearchBar = styled.div`
   display: flex;
   align-items: center;
@@ -234,8 +297,8 @@ const SearchBar = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.3);
   padding: 10px;
+  width: 100%;
   border-radius: 5px;
-  margin-bottom: 20px;
 
   input {
     border: none;
@@ -267,6 +330,7 @@ const customStyles = {
 };
 
 const Container = styled.div`
+  margin-top: 20px;
   padding: 1rem;
   background-color: ${({ theme }) => theme.colors.background};
   border-radius: 0.5rem;

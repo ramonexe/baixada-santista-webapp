@@ -47,9 +47,11 @@ const Sidebar = () => {
             <ListIcon />Listar Usuários
           </Item>
         )}
+        {(userRole === 'ADMIN' || userRole === 'STOCKIST') &&  (
         <LogoutButton onClick={handleLogout}>
           <ExitToAppIcon /> Sair
         </LogoutButton>
+        )}
       </Wrapper>
     </>
   );

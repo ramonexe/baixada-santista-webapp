@@ -2,10 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -15,7 +13,6 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import InputMask from 'react-input-mask';
 import { cadastrarUsuario } from '../../services/axiosServices';
-import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -68,7 +65,8 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [cpfError, setCpfError] = React.useState(false);
   const [cpfErrorMessage, setCpfErrorMessage] = React.useState('');
-  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [successMessage, setSuccessMessage] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
@@ -144,14 +142,14 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       email,
       cpf,
       senha,
-      role : 'user',
+      role: 'user',
     };
 
     try {
-      const response = await cadastrarUsuario(data);
-      console.log('Usuário cadastrado com sucesso:', response);
-      navigate('/entrar');
-    } catch (error) {
+      await cadastrarUsuario(data);
+      setSuccessMessage('Usuário cadastrado com sucesso:');
+      setErrorMessage('');
+    } catch (error: any) {
       if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
         setEmailError(true);
         setEmailErrorMessage('Email já cadastrado.');
@@ -161,6 +159,8 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       } else {
         console.error('Erro ao cadastrar usuário:', error);
       }
+      setErrorMessage(error.response.data);
+      setSuccessMessage('');
     }
   };
 
@@ -263,6 +263,16 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
+            {errorMessage && (
+              <Typography color="error" variant="body2">
+                {errorMessage}
+              </Typography>
+            )}
+            {successMessage && (
+              <Typography color="success" variant="body2">
+                {successMessage}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -271,21 +281,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             >
               Cadastrar
             </Button>
-          </Box>
-          <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>ou</Typography>
-          </Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography sx={{ textAlign: 'center' }}>
-              Já tem uma conta?{' '}
-              <Link
-                href="/entrar"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-              >
-                Entrar
-              </Link>
-            </Typography>
           </Box>
         </Card>
       </SignUpContainer>
