@@ -152,6 +152,7 @@ const ListaUsuarios: React.FC = () => {
               <Cell data-label="CPF">{user.cpf}</Cell>
               <Cell data-label="Status">{user.ativo ? 'Ativo' : 'Inativo'}</Cell>
               <Cell data-label="Ações">
+                <div>
                 <Tooltip title="Editar">
                   <EditIcon onClick={() => handleEditClick(user)} />
                 </Tooltip>
@@ -160,6 +161,7 @@ const ListaUsuarios: React.FC = () => {
                     {user.ativo ? <CheckCircleIcon /> : <CancelIcon />}
                   </ToggleButton>
                 </Tooltip>
+                </div>
               </Cell>
             </Row>
           ))}

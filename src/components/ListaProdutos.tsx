@@ -47,14 +47,16 @@ const ListaProdutos = () => {
             <Cell data-label="Valor"></Cell>
             <Cell data-label="Status"></Cell>
             <Cell data-label="Ações">
-              <Tooltip title="Editar">
-                <EditIcon />
-              </Tooltip>
-              <Tooltip title="Ativar/Desativar">
-                <ToggleButton >
-                  <CheckCircleIcon />
-                </ToggleButton>
-              </Tooltip>
+              <div>
+                <Tooltip title="Editar">
+                  <EditIcon />
+                </Tooltip>
+                <Tooltip title="Ativar/Desativar">
+                  <ToggleButton >
+                    <CheckCircleIcon />
+                  </ToggleButton>
+                </Tooltip>
+              </div>
             </Cell>
           </Row>
         </ItemList>
