@@ -52,7 +52,7 @@ const ListaProdutos = () => {
               </Tooltip>
               <Tooltip title="Ativar/Desativar">
                 <ToggleButton >
-                  <CheckCircle />
+                  <CheckCircleIcon />
                 </ToggleButton>
               </Tooltip>
             </Cell>
@@ -102,6 +102,20 @@ const LinkButton = styled(Link)`
 `;
 
 const EditIcon = styled(Edit)`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+
+  &:hover {
+  color: ${({ theme }) => theme.colors.secondary};
+  transition: color 0.3s ease-in-out;
+  transform: scale(1.1);
+  background-color: ${({ theme }) => theme.colors.background};
+  border-radius: 20%;
+  }
+`;
+
+const CheckCircleIcon = styled(CheckCircle)`
   cursor: pointer;
   color: ${({ theme }) => theme.colors.primary};
   padding: 0.1rem;

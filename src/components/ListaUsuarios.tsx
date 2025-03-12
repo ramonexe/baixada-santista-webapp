@@ -157,7 +157,7 @@ const ListaUsuarios: React.FC = () => {
                 </Tooltip>
                 <Tooltip title={user.ativo ? "Desativar" : "Ativar"}>
                   <ToggleButton onClick={() => handleToggleActive(user)}>
-                    {user.ativo ? <CheckCircle /> : <Cancel />}
+                    {user.ativo ? <CheckCircleIcon /> : <CancelIcon />}
                   </ToggleButton>
                 </Tooltip>
               </Cell>
@@ -423,6 +423,34 @@ const Cell = styled.div`
 `;
 
 const EditIcon = styled(Edit)`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+
+  &:hover {
+  color: ${({ theme }) => theme.colors.secondary};
+  transition: color 0.3s ease-in-out;
+  transform: scale(1.1);
+  background-color: ${({ theme }) => theme.colors.background};
+  border-radius: 20%;
+  }
+`;
+
+const CheckCircleIcon = styled(CheckCircle)`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+
+  &:hover {
+  color: ${({ theme }) => theme.colors.secondary};
+  transition: color 0.3s ease-in-out;
+  transform: scale(1.1);
+  background-color: ${({ theme }) => theme.colors.background};
+  border-radius: 20%;
+  }
+`;
+
+const CancelIcon = styled(Cancel)`
   cursor: pointer;
   color: ${({ theme }) => theme.colors.primary};
   padding: 0.1rem;
