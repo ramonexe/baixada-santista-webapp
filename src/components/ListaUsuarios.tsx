@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { listarUsuarios } from '../services/axiosServices';
-import { Edit } from '@mui/icons-material';
+import { Cancel, CheckCircle, Edit } from '@mui/icons-material';
 import axiosInstance from '../api/axiosConfig';
 import Modal from 'react-modal';
 import Tooltip from '@mui/material/Tooltip';
@@ -150,12 +150,15 @@ const ListaUsuarios: React.FC = () => {
               <Cell data-label="Email">{user.email}</Cell>
               <Cell data-label="Grupo">{mapRoleToLabel(user.role)}</Cell>
               <Cell data-label="CPF">{user.cpf}</Cell>
-              <Cell data-label="Status">
-                <ToggleButton onClick={() => handleToggleActive(user)}>{user.ativo ? 'Ativo' : 'Inativo'}</ToggleButton>
-                </Cell>
+              <Cell data-label="Status">{user.ativo ? 'Ativo' : 'Inativo'}</Cell>
               <Cell data-label="Ações">
                 <Tooltip title="Editar">
                   <EditIcon onClick={() => handleEditClick(user)} />
+                </Tooltip>
+                <Tooltip title={user.ativo ? "Desativar" : "Ativar"}>
+                  <ToggleButton onClick={() => handleToggleActive(user)}>
+                    {user.ativo ? <CheckCircle /> : <Cancel />}
+                  </ToggleButton>
                 </Tooltip>
               </Cell>
             </Row>

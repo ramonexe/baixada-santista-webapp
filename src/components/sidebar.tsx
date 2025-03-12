@@ -7,14 +7,17 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userNickname, setUserNickname] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       setUserRole(user.role || null);
+      setUserNickname(user.nickname || null);
     } catch (error) {
       console.error('Erro ao fazer parse do JSON:', error);
       setUserRole(null);
+      setUserNickname(null);
     }
   }, []);
 
@@ -39,7 +42,13 @@ const Sidebar = () => {
       </MenuButton>
       <Wrapper $isOpen={isOpen}>
         <Title>Baixada Santista</Title>
-        <Item onClick={() => handleNavigate('/produtos')}>
+        {userNickname && userRole && (
+          <UserInfo>
+            <p>Olá, {userNickname}</p>
+            <p>Grupo: {userRole === 'ADMIN' ? 'ADMINISTRADOR' : userRole === 'STOCKIST' ? 'ESTOQUISTA' : 'USUÁRIO'}</p>
+          </UserInfo>
+        )}
+        <Item onClick={() => handleNavigate('/')}>
           <ListIcon />Listar Produtos
         </Item>
         {userRole === 'ADMIN' && (
@@ -56,6 +65,18 @@ const Sidebar = () => {
     </>
   );
 };
+
+const UserInfo = styled.div`
+  text-align: flex-start;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.colors.text};
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+`;
 
 const MenuButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
