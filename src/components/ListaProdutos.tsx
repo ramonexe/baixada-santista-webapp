@@ -1,13 +1,66 @@
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Tooltip from '@mui/material/Tooltip';
 import { CheckCircle, Edit } from '@mui/icons-material';
 import Link from '@mui/material/Link';
+import { listarProdutos } from '../services/axiosServices';
 
 const ListaProdutos = () => {
   const [searchTerm, setSearchTerm] = useState('');
+
+  interface Produto {
+    id: number;
+    nomeProduto: string;
+    avaliacao: number;
+    descricao: string;
+    preco: number;
+    quantEstoque: number;
+    ativo: boolean;
+    imagens: [
+      id: number,
+      URL: string,
+      imagemPrincipal: boolean,
+    ]
+  }
+
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [size] = useState(10);
+
+  const fetchProdutos = async (page: number) => {
+    try {
+      const response = await listarProdutos(page, size);
+      setProdutos(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Error listing products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProdutos(currentPage);
+  }, [currentPage]);
+
+  const nextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const filteredProducts = searchTerm
+    ? produtos.filter((produto) =>
+      produto.nomeProduto.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : produtos;
 
   return (
     <>
@@ -29,10 +82,21 @@ const ListaProdutos = () => {
           />
         </SearchBar>
       </div>
+      <Pagination>
+          <button onClick={prevPage} disabled={currentPage === 0}>
+            Anterior
+          </button>
+          <span>
+            Página {currentPage + 1} de {totalPages}
+          </span>
+          <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
+            Próxima
+          </button>
+        </Pagination>
       <Container>
         <h1>Lista de Produtos</h1>
         <ItemList>
-          <Header>
+        <Header>
             <HeaderItem>Código</HeaderItem>
             <HeaderItem>Nome</HeaderItem>
             <HeaderItem>Quantidade</HeaderItem>
@@ -40,30 +104,63 @@ const ListaProdutos = () => {
             <HeaderItem>Status</HeaderItem>
             <HeaderItem>Ações</HeaderItem>
           </Header>
-          <Row>
-            <Cell data-label="Código"></Cell>
-            <Cell data-label="Nome"></Cell>
-            <Cell data-label="Quantidade"></Cell>
-            <Cell data-label="Valor"></Cell>
-            <Cell data-label="Status"></Cell>
-            <Cell data-label="Ações">
-              <div>
-                <Tooltip title="Editar">
-                  <EditIcon />
-                </Tooltip>
-                <Tooltip title="Ativar/Desativar">
-                  <ToggleButton >
-                    <CheckCircleIcon />
-                  </ToggleButton>
-                </Tooltip>
-              </div>
-            </Cell>
-          </Row>
+          {filteredProducts.map((produto) => (
+            <Row key={produto.id}>
+              <Cell data-label="Código">{produto.id}</Cell>
+              <Cell data-label="Nome">{produto.nomeProduto}</Cell>
+              <Cell data-label="Quantidade">{produto.quantEstoque}</Cell>
+              <Cell data-label="Valor">{produto.preco}</Cell>
+              <Cell data-label="Status">{produto.ativo ? 'Ativo' : 'Inativo'}</Cell>
+              <Cell data-label="Ações">
+                <div>
+                  <Tooltip title="Editar">
+                    <EditIcon />
+                  </Tooltip>
+                  <Tooltip title="Ativar/Desativar">
+                    <ToggleButton>
+                      <CheckCircleIcon />
+                    </ToggleButton>
+                  </Tooltip>
+                </div>
+              </Cell>
+            </Row>
+          ))}
         </ItemList>
       </Container>
     </>
   );
 };
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+
+  button {
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.background};
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+
+    &:disabled {
+      background-color: ${({ theme }) => theme.colors.disabled};
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+
+  span {
+    margin: 0 1rem;
+    color: ${({ theme }) => theme.colors.text};
+  }
+`;
 
 const ToggleButton = styled.button`
   cursor: pointer;
