@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { List as ListIcon, Menu as MenuIcon, Close as CloseIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Close as CloseIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/doghall.png';
+import PetsIcon from '@mui/icons-material/Pets';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,17 +51,17 @@ const Sidebar = () => {
           </UserInfo>
         )}
         <Item onClick={() => handleNavigate('/')}>
-          <ListIcon />Listar Produtos
+          <PetsIcon />Listar Produtos
         </Item>
         {userRole === 'ADMIN' && (
           <Item onClick={() => handleNavigate('/admin/usuarios')}>
-            <ListIcon />Listar Usuários
+            <PetsIcon />Listar Usuários
           </Item>
         )}
-        {(userRole === 'ADMIN' || userRole === 'STOCKIST') &&  (
-        <LogoutButton onClick={handleLogout}>
-          <ExitToAppIcon /> Sair
-        </LogoutButton>
+        {(userRole === 'ADMIN' || userRole === 'STOCKIST') && (
+          <LogoutButton onClick={handleLogout}>
+            <ExitToAppIcon /> Sair
+          </LogoutButton>
         )}
       </Wrapper>
     </>
@@ -117,6 +118,11 @@ const Item = styled.div`
   &:hover {
     background: ${({ theme }) => theme.colors.primary};
     color: white;
+
+    svg {
+      transform: scale(1.1) rotate(20deg);
+      transition: transform 0.3s;
+    }
   }
 `;
 

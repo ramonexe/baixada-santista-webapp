@@ -85,13 +85,13 @@ const ThumbnailsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const Thumbnail = styled.div<{ active: boolean }>`
+const Thumbnail = styled.div<{ active: string }>`
   width: 60px;
   height: 60px;
   border-radius: 5px;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid ${props => props.active ? props.theme.colors.primary : 'transparent'};
+  border: 2px solid ${props => props.active === 'true' ? props.theme.colors.primary : 'transparent'};
   
   img {
     width: 100%;
@@ -158,7 +158,6 @@ interface VisualizarModalProps {
 
 export default function VisualizarModal(props: VisualizarModalProps) {
     const { isOpen, onClose, images, nome, avaliacao, descricao, preco, quantidadeEstoque } = props;
-
     const [activeSlide, setActiveSlide] = useState(0);
 
     const responsive = {
@@ -201,7 +200,7 @@ export default function VisualizarModal(props: VisualizarModalProps) {
                             {images.map((image, index) => (
                                 <Thumbnail
                                     key={index}
-                                    active={index === activeSlide}
+                                    active={index === activeSlide ? 'true' : 'false'}
                                     onClick={() => setActiveSlide(index)}
                                 >
                                     <img src={image} alt={`Thumbnail ${index + 1}`} />

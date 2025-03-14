@@ -6,6 +6,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { CheckCircle, Edit } from '@mui/icons-material';
 import Link from '@mui/material/Link';
 import { listarProdutos } from '../services/axiosServices';
+import VisualizarModal from './VisualizarModal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const ListaProdutos = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,22 +20,35 @@ const ListaProdutos = () => {
     preco: number;
     quantEstoque: number;
     ativo: boolean;
-    imagens: [
-      id: number,
-      URL: string,
-      imagemPrincipal: boolean,
-    ]
+    imagens: Array<{
+      id: number;
+      url: string;
+      imagemPrincipal: boolean;
+    }>
   }
 
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [size] = useState(10);
+  const [visualizarModalOpen, setVisualizarModalOpen] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null);
+
+  const handleOpenModal = (produto: Produto) => {
+    setProdutoSelecionado(produto);
+    setVisualizarModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setVisualizarModalOpen(false);
+    setProdutoSelecionado(null);
+  };
 
   const fetchProdutos = async (page: number) => {
     try {
       const response = await listarProdutos(page, size);
       setProdutos(response.content);
+      console.log(response.content);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Error listing products:', error);
@@ -83,20 +98,20 @@ const ListaProdutos = () => {
         </SearchBar>
       </div>
       <Pagination>
-          <button onClick={prevPage} disabled={currentPage === 0}>
-            Anterior
-          </button>
-          <span>
-            Página {currentPage + 1} de {totalPages}
-          </span>
-          <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
-            Próxima
-          </button>
-        </Pagination>
+        <button onClick={prevPage} disabled={currentPage === 0}>
+          Anterior
+        </button>
+        <span>
+          Página {currentPage + 1} de {totalPages}
+        </span>
+        <button onClick={nextPage} disabled={currentPage === totalPages - 1}>
+          Próxima
+        </button>
+      </Pagination>
       <Container>
         <h1>Lista de Produtos</h1>
         <ItemList>
-        <Header>
+          <Header>
             <HeaderItem>Código</HeaderItem>
             <HeaderItem>Nome</HeaderItem>
             <HeaderItem>Quantidade</HeaderItem>
@@ -112,7 +127,7 @@ const ListaProdutos = () => {
               <Cell data-label="Valor">{produto.preco}</Cell>
               <Cell data-label="Status">{produto.ativo ? 'Ativo' : 'Inativo'}</Cell>
               <Cell data-label="Ações">
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Tooltip title="Editar">
                     <EditIcon />
                   </Tooltip>
@@ -121,15 +136,50 @@ const ListaProdutos = () => {
                       <CheckCircleIcon />
                     </ToggleButton>
                   </Tooltip>
+                  <Tooltip title="Visualizar">
+                  <Visualizar onClick={() => handleOpenModal(produto)}>
+                    <VisualizarIcon/>
+                  </Visualizar>
+                  </Tooltip>
                 </div>
               </Cell>
             </Row>
           ))}
         </ItemList>
+        {produtoSelecionado && (
+          <VisualizarModal
+            isOpen={visualizarModalOpen}
+            onClose={handleCloseModal}
+            images={produtoSelecionado.imagens.map((imagem) => imagem.url)}
+            nome={produtoSelecionado.nomeProduto}
+            avaliacao={produtoSelecionado.avaliacao.toString()}
+            descricao={produtoSelecionado.descricao}
+            preco={produtoSelecionado.preco.toString()}
+            quantidadeEstoque={produtoSelecionado.quantEstoque.toString()}
+          />
+        )}
       </Container>
     </>
   );
 };
+
+const Visualizar = styled.button`
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  font-weight: bold;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+  margin-left: 0.5rem;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.secondary};
+    transition: color 0.3s ease-in-out;
+    transform: scale(1.1);
+  }
+`;
 
 const Pagination = styled.div`
   display: flex;
@@ -216,6 +266,20 @@ const EditIcon = styled(Edit)`
 `;
 
 const CheckCircleIcon = styled(CheckCircle)`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.1rem;
+
+  &:hover {
+  color: ${({ theme }) => theme.colors.secondary};
+  transition: color 0.3s ease-in-out;
+  transform: scale(1.1);
+  background-color: ${({ theme }) => theme.colors.background};
+  border-radius: 20%;
+  }
+`;
+
+const VisualizarIcon = styled(VisibilityIcon)`
   cursor: pointer;
   color: ${({ theme }) => theme.colors.primary};
   padding: 0.1rem;

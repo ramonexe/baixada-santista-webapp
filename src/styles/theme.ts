@@ -5,6 +5,7 @@ export const theme = {
     background: '#F5F5F5',
     backgroundDark: '#E5E5E5',
     text: '#333333',
+    disabled: '#D3D3D3',
   },
 } as const
 
