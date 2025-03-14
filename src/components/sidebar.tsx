@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { List as ListIcon, Menu as MenuIcon, Close as CloseIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import logo from '../../public/doghall.png';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ const Sidebar = () => {
         {isOpen ? <CloseIcon style={{ fontSize: '2rem' }} /> : <MenuIcon style={{ fontSize: '2rem' }} />}
       </MenuButton>
       <Wrapper $isOpen={isOpen}>
-        <Title>Baixada Santista</Title>
+        <Logo src={logo} alt="DogHall" />
         {userNickname && userRole && (
           <UserInfo>
             <p>Olá, {userNickname}</p>
@@ -78,6 +79,11 @@ const UserInfo = styled.div`
   }
 `;
 
+const Logo = styled.img`
+  width: 100px;
+  margin-bottom: 1rem;
+`;
+
 const MenuButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
   background-color: ${({ $isOpen }) => ($isOpen ? 'transparent' : '#f0f0f0')};
@@ -90,13 +96,6 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   @media (min-width: 1200px) {
     display: none;
   }
-`;
-
-const Title = styled.h1`
-  color: ${({ theme }) => theme.colors.text};
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  gap: 0.5rem;
 `;
 
 const Item = styled.div`
