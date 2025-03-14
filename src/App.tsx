@@ -14,7 +14,7 @@ import CadastrarProduto from './pages/sign-up/CadastrarProduto'
 
 function App() {
   const location = useLocation();
-  const showSidebar = location.pathname !== '/entrar' && location.pathname !== '/cadastrar';
+  const showSidebar = location.pathname !== '/entrar';
 
   return (
     <ThemeProvider theme={theme}>
