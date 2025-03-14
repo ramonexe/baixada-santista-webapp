@@ -68,13 +68,16 @@ const Sidebar = () => {
 };
 
 const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 100%;
   text-align: flex-start;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.colors.text};
 
   p {
     margin: 0;
-    font-size: 1rem;
     font-weight: bold;
   }
 `;
@@ -112,7 +115,8 @@ const Item = styled.div`
   gap: 0.5rem;
 
   &:hover {
-    background-color: #e0e0e0;
+    background: ${({ theme }) => theme.colors.primary};
+    color: white;
   }
 `;
 
@@ -135,15 +139,12 @@ const LogoutButton = styled.div`
     background: ${({ theme }) => theme.colors.primary};
     color: white;
   }
-  svg {
-    margin-right: 0.5rem;
-  }
 `;
 
 const Wrapper = styled.div<{ $isOpen: boolean }>`
   user-select: none;
   height: 100%;
-  width: 250px;
+  width: 220px;
   display: flex;
   text-align: flex-start;
   flex-direction: column;
@@ -158,7 +159,7 @@ const Wrapper = styled.div<{ $isOpen: boolean }>`
   left: ${({ $isOpen }) => ($isOpen ? '0' : '-100%')};
   transition: left 0.3s;
   z-index: 999;
-
+  font-size: 0.9rem;
   @media (min-width: 1200px) {
     position: static;
     left: 0;

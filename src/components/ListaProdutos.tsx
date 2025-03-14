@@ -100,6 +100,7 @@ const LinkButton = styled(Link)`
 
   &:visited, &:link, &:active {
     color: ${({ theme }) => theme.colors.background};
+    text-decoration: none;
   }
 `;
 
