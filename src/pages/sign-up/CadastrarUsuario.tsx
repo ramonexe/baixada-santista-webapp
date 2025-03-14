@@ -132,13 +132,13 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
       return;
     }
 
-    const nickname = (document.getElementById('name') as HTMLInputElement).value;
+    const name = (document.getElementById('name') as HTMLInputElement).value;
     const email = (document.getElementById('email') as HTMLInputElement).value;
     const cpf = (document.getElementById('cpf') as HTMLInputElement).value;
     const senha = (document.getElementById('password') as HTMLInputElement).value;
 
     const data = {
-      nickname,
+      name,
       email,
       cpf,
       senha,
