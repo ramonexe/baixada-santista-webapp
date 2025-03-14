@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { List as ListIcon, Menu as MenuIcon, Close as CloseIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../public/doghall.png';
+import logo from '../assets/doghall.png';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +94,7 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   padding-top: 0.5rem;
   border: none;
   cursor: pointer;
-  z-index: 1100;
+  z-index: 998;
 
   @media (min-width: 1200px) {
     display: none;

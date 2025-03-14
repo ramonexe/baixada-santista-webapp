@@ -24,6 +24,7 @@
     "react-dom": "^18.3.1",
     "react-input-mask": "^2.0.4",
     "react-modal": "^3.16.3",
+    "react-multi-carousel": "^2.8.5",
     "react-router-dom": "^7.2.0",
     "styled-components": "^6.1.15"
   },
