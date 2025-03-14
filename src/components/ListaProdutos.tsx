@@ -13,7 +13,7 @@ const ListaProdutos = () => {
     <>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
         <LinkButton
-          href="/admin/cadastrar"
+          href="/admin/cadastrar-produto"
           variant="body2"
           sx={{ alignSelf: 'center' }}
         >

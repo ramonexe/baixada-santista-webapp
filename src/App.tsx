@@ -10,6 +10,7 @@ import ListaProdutos from './components/ListaProdutos'
 import Sidebar from './components/sidebar'
 import styled from 'styled-components'
 import ProtectedRoute from './services/ProtectedRoute'
+import CadastrarProduto from './pages/sign-up/CadastrarProduto'
 
 function App() {
   const location = useLocation();
@@ -26,7 +27,8 @@ function App() {
             <Route path="/" element={<ListaProdutos />} />
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminPanel />} >
-                <Route path="cadastrar" element={<CadastrarUsuario />} />
+                <Route path="cadastrar-usuario" element={<CadastrarUsuario />} />
+                <Route path="cadastrar-produto" element={<CadastrarProduto />} />
                 <Route path="usuarios" element={<ListaUsuarios />} />
               </Route>
             </Route>
