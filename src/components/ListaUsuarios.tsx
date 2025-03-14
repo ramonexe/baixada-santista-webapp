@@ -12,7 +12,7 @@ import Link from '@mui/material/Link';
 interface User {
   cpf: string;
   id: number;
-  nickname: string;
+  name: string;
   email: string;
   senha: string;
   senhaNova: string;
@@ -62,7 +62,7 @@ const ListaUsuarios: React.FC = () => {
         }
 
         await axiosInstance.put(`/usuario/editar/${selectedUser.id}`, {
-          nickname: selectedUser.nickname,
+          name: selectedUser.name,
           email: selectedUser.email,
           cpf: selectedUser.cpf,
           senha: selectedUser.senha,
@@ -110,7 +110,7 @@ const ListaUsuarios: React.FC = () => {
 
   const filteredUsers = searchTerm
     ? users.filter((user) =>
-      user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     : users;
 
@@ -146,7 +146,7 @@ const ListaUsuarios: React.FC = () => {
           </Header>
           {filteredUsers.map((user) => (
             <Row key={user.id}>
-              <Cell data-label="Nome">{user.nickname}</Cell>
+              <Cell data-label="Nome">{user.name}</Cell>
               <Cell data-label="Email">{user.email}</Cell>
               <Cell data-label="Grupo">{mapRoleToLabel(user.role)}</Cell>
               <Cell data-label="CPF">{user.cpf}</Cell>
@@ -180,9 +180,9 @@ const ListaUsuarios: React.FC = () => {
                 <p>Nome:</p>
                 <StyledInput
                   type="text"
-                  value={selectedUser.nickname}
+                  value={selectedUser.name}
                   onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, nickname: e.target.value })
+                    setSelectedUser({ ...selectedUser, name: e.target.value })
                   }
                 />
               </label>
