@@ -3,7 +3,7 @@ import { ThemeProvider } from 'styled-components'
 import { GlobalStyles } from './styles/globals'
 import { theme } from './styles/theme'
 import SignIn from './pages/sign-in/SignIn'
-import SignUp from './pages/sign-up/SignUp'
+import CadastrarUsuario from './pages/sign-up/CadastrarUsuario'
 import AdminPanel from './pages/AdminPanel'
 import ListaUsuarios from './components/ListaUsuarios'
 import ListaProdutos from './components/ListaProdutos'
@@ -26,7 +26,7 @@ function App() {
             <Route path="/" element={<ListaProdutos />} />
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminPanel />} >
-                <Route path="cadastrar" element={<SignUp />} />
+                <Route path="cadastrar" element={<CadastrarUsuario />} />
                 <Route path="usuarios" element={<ListaUsuarios />} />
               </Route>
             </Route>
