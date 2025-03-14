@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { GlobalStyles } from './styles/globals'
 import { theme } from './styles/theme'
@@ -24,7 +24,10 @@ function App() {
         <Content>
           <Routes>
             <Route path="/entrar" element={<SignIn />} />
-            <Route path="/" element={<ListaProdutos />} />
+            <Route path="/" element={<Navigate to="/entrar" />} />
+            <Route element={<ProtectedRoute allowedRoles={['STOCKIST', 'ADMIN']} />}>
+              <Route path="/produtos" element={<ListaProdutos />} />
+            </Route>
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminPanel />} >
                 <Route path="cadastrar-usuario" element={<CadastrarUsuario />} />

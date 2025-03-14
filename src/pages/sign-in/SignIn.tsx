@@ -73,7 +73,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       email,
       senha,
     };
-
+    
     try {
       const response = await authUser(dataUser);
       navigate('/produtos');

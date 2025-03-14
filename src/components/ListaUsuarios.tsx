@@ -177,7 +177,7 @@ const ListaUsuarios: React.FC = () => {
               <h2>Editar Usuário</h2>
               {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
               <label>
-                <p>Nickname:</p>
+                <p>Nome:</p>
                 <StyledInput
                   type="text"
                   value={selectedUser.nickname}
