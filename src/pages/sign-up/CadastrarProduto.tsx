@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -8,11 +9,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
+import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Close';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
-import InputMask from 'react-input-mask';
-import { cadastrarUsuario } from '../../services/axiosServices';
+import { cadastrarProduto } from '../../services/axiosServices';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -22,144 +25,87 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
   [theme.breakpoints.up('sm')]: {
-    width: '450px',
+    width: '600px',
   },
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-  }),
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
-  padding: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(4),
-  },
-  '&::before': {
-    content: '""',
-    display: 'block',
-    position: 'absolute',
-    zIndex: -1,
-    inset: 0,
-    backgroundImage:
-      'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
-      backgroundImage:
-        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-    }),
-  },
+ 
 }));
 
 export default function CadastrarProduto(props: { disableCustomTheme?: boolean }) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-  const [cpfError, setCpfError] = React.useState(false);
-  const [cpfErrorMessage, setCpfErrorMessage] = React.useState('');
+  const [id, setId] = React.useState('');
+  const [ativo, setAtivo] = React.useState(false);
+  const [avaliacao, setAvaliacao] = React.useState('');
+  const [nome, setNome] = React.useState('');
+  const [descricao, setDescricao] = React.useState('');
+  const [preco, setPreco] = React.useState('');
+  const [quantEstoque, setQuantEstoque] = React.useState('');
+  const [imagens, setImagens] = React.useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = React.useState<string[]>([]);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [successMessage, setSuccessMessage] = React.useState('');
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const files = Array.from(event.target.files);
+      setImagens([...imagens, ...files]);
+
+      const previews = files.map((file) => URL.createObjectURL(file));
+      setImagePreviews([...imagePreviews, ...previews]);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const updatedImages = imagens.filter((_, i) => i !== index);
+    const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
+
+    setImagens(updatedImages);
+    setImagePreviews(updatedPreviews);
+  };
+
   const validateInputs = () => {
-    const email = document.getElementById('email') as HTMLInputElement;
-    const password = document.getElementById('password') as HTMLInputElement;
-    const passwordConfirm = document.getElementById('passwordconfirm') as HTMLInputElement;
-    const name = document.getElementById('name') as HTMLInputElement;
-    const cpf = document.getElementById('cpf') as HTMLInputElement;
-
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Por favor insira um e-mail válido.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+    if (!id || !avaliacao || !nome || !descricao || !preco || !quantEstoque || imagens.length === 0) {
+      setErrorMessage('Todos os campos são obrigatórios, incluindo pelo menos uma imagem.');
+      return false;
     }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter no mínimo 6 caracteres.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    if (password.value !== passwordConfirm.value) {
-      setPasswordError(true);
-      setPasswordErrorMessage('As senhas não coincidem.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    if (!name.value || name.value.length < 1) {
-      setNameError(true);
-      setNameErrorMessage('Nome é obrigatório.');
-      isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage('');
-    }
-
-    if (!cpf.value || cpf.value.length < 1) {
-      setCpfError(true);
-      setCpfErrorMessage('CPF is required.');
-      isValid = false;
-    } else {
-      setCpfError(false);
-      setCpfErrorMessage('');
-    }
-
-    return isValid;
+    setErrorMessage('');
+    return true;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!validateInputs()) {
-      return;
-    }
+    if (!validateInputs()) return;
 
-    const nickname = (document.getElementById('name') as HTMLInputElement).value;
-    const email = (document.getElementById('email') as HTMLInputElement).value;
-    const cpf = (document.getElementById('cpf') as HTMLInputElement).value;
-    const senha = (document.getElementById('password') as HTMLInputElement).value;
-
-    const data = {
-      nickname,
-      email,
-      cpf,
-      senha,
-      role: 'user',
-    };
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('ativo', ativo ? 'true' : 'false');
+    formData.append('avaliacao', avaliacao);
+    formData.append('nome', nome);
+    formData.append('descricao', descricao);
+    formData.append('preco', preco);
+    formData.append('quant_estoque', quantEstoque);
+    imagens.forEach((imagem) => formData.append('imagens', imagem));
 
     try {
-      await cadastrarUsuario(data);
-      setSuccessMessage('Usuário cadastrado com sucesso:');
+      await cadastrarProduto(formData);
+      setSuccessMessage('Produto cadastrado com sucesso!');
       setErrorMessage('');
-    } catch (error: any) {
-      if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
-        setEmailError(true);
-        setEmailErrorMessage('Email já cadastrado.');
-      } else if ((error as any).response && (error as any).response.data === 'CPF já cadastrado') {
-        setCpfError(true);
-        setCpfErrorMessage('CPF já cadastrado.');
-      } else {
-        console.error('Erro ao cadastrar usuário:', error);
-      }
-      setErrorMessage(error.response.data);
+      setId('');
+      setAtivo(false);
+      setAvaliacao('');
+      setNome('');
+      setDescricao('');
+      setPreco('');
+      setQuantEstoque('');
+      setImagens([]);
+      setImagePreviews([]);
+    } catch (error) {
+      console.error('Erro ao cadastrar produto:', error);
+      setErrorMessage('Erro ao cadastrar produto. Tente novamente.');
       setSuccessMessage('');
     }
   };
@@ -168,117 +114,57 @@ export default function CadastrarProduto(props: { disableCustomTheme?: boolean }
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
-      <SignUpContainer direction="column" justifyContent="space-between">
+      <SignUpContainer direction="column" justifyContent="center">
         <Card variant="outlined">
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >
-            Cadastrar produto
+          <Typography component="h1" variant="h4">
+            Cadastrar Produto
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {[
+              { label: 'Nome do Produto', value: nome, setter: setNome },
+              { label: 'Avaliação', value: avaliacao, setter: setAvaliacao },
+              
+              { label: 'Descrição', value: descricao, setter: setDescricao },
+              { label: 'Preço', value: preco, setter: setPreco },
+              { label: 'Quantidade em Estoque', value: quantEstoque, setter: setQuantEstoque }].map((field, index) => (
+              <FormControl key={index}>
+                <FormLabel>{field.label}</FormLabel>
+                <TextField
+                  required
+                  fullWidth
+                  value={field.value}
+                  onChange={(e) => field.setter(e.target.value)}
+                />
+              </FormControl>
+            ))}
+
             <FormControl>
-              <FormLabel htmlFor="name">Nome</FormLabel>
-              <TextField
-                autoComplete="name"
-                name="name"
-                required
-                fullWidth
-                id="name"
-                placeholder="Seu Nome"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
+              
+              <h3> Inativo / Ativo</h3>
+              <Switch checked={ativo} onChange={(e) => setAtivo(e.target.checked)} />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel htmlFor="imagens">Imagens do Produto</FormLabel>
+              <input
+                type="file"
+                id="imagens"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                placeholder="seu@email.com"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="cpf">CPF</FormLabel>
-              <InputMask
-                mask="999.999.999-99"
-              >
-                {() => (
-                  <TextField
-                    required
-                    fullWidth
-                    id="cpf"
-                    placeholder="000.000.000-00"
-                    name="cpf"
-                    autoComplete="cpf"
-                    variant="outlined"
-                    error={cpfError}
-                    helperText={cpfErrorMessage}
-                    color={cpfError ? 'error' : 'primary'}
-                  />
-                )}
-              </InputMask>
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password">Senha</FormLabel>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                placeholder="Insira sua senha"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                placeholder="Confirme sua senha"
-                type="password"
-                id="passwordconfirm"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            {errorMessage && (
-              <Typography color="error" variant="body2">
-                {errorMessage}
-              </Typography>
-            )}
-            {successMessage && (
-              <Typography color="success" variant="body2">
-                {successMessage}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
+
+            {imagePreviews.map((preview, index) => (
+              <Box key={index} sx={{ position: 'relative', display: 'inline-block', marginRight: 1 }}>
+                <img src={preview} alt={`Imagem ${index + 1}`} style={{ width: 100, height: 100, objectFit: 'cover' }} />
+                <IconButton onClick={() => handleRemoveImage(index)} sx={{ position: 'absolute', top: 0, right: 0 }}>
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            ))}
+
+            <Button type="submit" variant="contained" color="primary">
               Cadastrar
             </Button>
           </Box>
