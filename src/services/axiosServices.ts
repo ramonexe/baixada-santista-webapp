@@ -20,6 +20,17 @@ export const cadastrarProduto = async (data: any) => {
     }
 };
 
+export const listarProdutos = async (page: number, size: number) => {
+    const response = await axiosInstance.get(`/produto/listarTodos`, {
+      params: {
+        page,
+        size,
+        sort: 'id,desc',
+      },
+    });
+    return response.data;
+  };
+
 export const listarUsuarios = async () => {
     try {
         const response = await axiosInstance.get('/usuario/listarTodos');
