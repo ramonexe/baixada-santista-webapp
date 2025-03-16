@@ -10,7 +10,6 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import InputMask from 'react-input-mask';
 import { cadastrarUsuario } from '../../services/axiosServices';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +19,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   flexDirection: 'column',
   alignSelf: 'center',
   width: '100%',
+  overflow: 'hidden',
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
@@ -46,6 +46,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     content: '""',
     display: 'block',
     position: 'absolute',
+    overflow: 'hidden',
     zIndex: -1,
     inset: 0,
     backgroundImage:
@@ -171,7 +172,6 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography

@@ -14,7 +14,6 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Close';
 import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { cadastrarProduto } from '../../services/axiosServices';
 
 const Card = styled(MuiCard)(({ theme }) => ({
