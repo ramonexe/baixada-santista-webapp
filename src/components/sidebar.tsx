@@ -60,7 +60,7 @@ const Sidebar = () => {
           <PetsIcon />Produtos
         </Item>
         {userRole === 'ADMIN' && (
-          <Item onClick={() => handleNavigate('/admin/usuarios')}>
+          <Item onClick={() => handleNavigate('/usuarios')}>
             <PetsIcon />Usuários
           </Item>
         )}

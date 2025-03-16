@@ -13,6 +13,7 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { authUser } from '../../services/axiosServices';
 import { useNavigate } from 'react-router-dom';
+import LoadingOverlay from '../../components/LoadingOverlay';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -62,6 +63,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -73,14 +75,19 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       email,
       senha,
     };
+
+    setLoading(true);
     
     try {
       const response = await authUser(dataUser);
-      navigate('/produtos');
       //guardar id do usuário no localstorage
       localStorage.setItem('user', JSON.stringify(response));
+      setTimeout(() => {
+        navigate('/produtos');
+      }, 2000);
     } catch (error: any) {
       setErrorMessage(error.response.data);
+      setLoading(false);
     }
   };
 
@@ -92,16 +99,16 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Por favor insira um e-mail válido.');
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 1) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('A senha deve ter no mínimo 1 caracteres.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -179,11 +186,13 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               fullWidth
               variant="contained"
               onClick={validateInputs}
+              disabled={loading}
             >
               Entrar
             </Button>
           </Box>
         </Card>
+        {loading && <LoadingOverlay />}
       </SignInContainer>
     </AppTheme>
   );

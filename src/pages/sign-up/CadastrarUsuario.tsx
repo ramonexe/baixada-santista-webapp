@@ -153,7 +153,7 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
       await cadastrarUsuario(data);
       setSuccessMessage('Usuário cadastrado com sucesso:');
       setErrorMessage('');
-      navigate('/admin/usuarios');
+      navigate('/usuarios');
     } catch (error: any) {
       if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
         setEmailError(true);
