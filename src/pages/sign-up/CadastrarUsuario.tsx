@@ -13,6 +13,7 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import InputMask from 'react-input-mask';
 import { cadastrarUsuario } from '../../services/axiosServices';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -34,8 +35,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
+  height: 'calc((1 - var(--template-frame-height, 0)) * 90dvh)',
+  minHeight: '90%',
+  overflow: 'hidden',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -67,6 +69,7 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
   const [cpfErrorMessage, setCpfErrorMessage] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const [successMessage, setSuccessMessage] = React.useState('');
+  const navigate = useNavigate();
 
   const validateInputs = () => {
     const email = document.getElementById('email') as HTMLInputElement;
@@ -86,9 +89,9 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 1) {
       setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter no mínimo 6 caracteres.');
+      setPasswordErrorMessage('A senha deve ter no mínimo 1 caracteres.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -149,6 +152,7 @@ export default function CadastrarUsuario(props: { disableCustomTheme?: boolean }
       await cadastrarUsuario(data);
       setSuccessMessage('Usuário cadastrado com sucesso:');
       setErrorMessage('');
+      navigate('/admin/usuarios');
     } catch (error: any) {
       if ((error as any).response && (error as any).response.data === 'Email já cadastrado') {
         setEmailError(true);

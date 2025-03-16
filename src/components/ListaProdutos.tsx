@@ -6,7 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { CheckCircle, Edit } from '@mui/icons-material';
 import Link from '@mui/material/Link';
 import { listarProdutos } from '../services/axiosServices';
-import VisualizarModal from './VisualizarModal';
+import ModalProdutos from './ModalProdutos';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const ListaProdutos = () => {
@@ -31,16 +31,16 @@ const ListaProdutos = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [size] = useState(10);
-  const [visualizarModalOpen, setVisualizarModalOpen] = useState(false);
+  const [ModalProdutosOpen, setModalProdutosOpen] = useState(false);
   const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null);
 
   const handleOpenModal = (produto: Produto) => {
     setProdutoSelecionado(produto);
-    setVisualizarModalOpen(true);
+    setModalProdutosOpen(true);
   };
 
   const handleCloseModal = () => {
-    setVisualizarModalOpen(false);
+    setModalProdutosOpen(false);
     setProdutoSelecionado(null);
   };
 
@@ -109,7 +109,7 @@ const ListaProdutos = () => {
         </button>
       </Pagination>
       <Container>
-        <h1>Lista de Produtos</h1>
+        <h1 style={{ marginTop: '0' }}>Lista de Produtos</h1>
         <ItemList>
           <Header>
             <HeaderItem>Código</HeaderItem>
@@ -147,8 +147,8 @@ const ListaProdutos = () => {
           ))}
         </ItemList>
         {produtoSelecionado && (
-          <VisualizarModal
-            isOpen={visualizarModalOpen}
+          <ModalProdutos
+            isOpen={ModalProdutosOpen}
             onClose={handleCloseModal}
             images={produtoSelecionado.imagens.map((imagem) => imagem.url)}
             nome={produtoSelecionado.nomeProduto}

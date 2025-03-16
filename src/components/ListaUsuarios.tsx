@@ -135,6 +135,7 @@ const ListaUsuarios: React.FC = () => {
         </SearchBar>
       </div>
       <Container>
+      <h1 style={{ marginTop: '0' }}>Lista de Usuários</h1>
         <ItemList>
           <Header>
             <HeaderItem>Nome</HeaderItem>

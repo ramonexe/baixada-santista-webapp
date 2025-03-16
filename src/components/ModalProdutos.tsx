@@ -4,6 +4,9 @@ import { Button } from '@mui/material';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { useState } from 'react';
+import StarIcon from '@mui/icons-material/Star';
+import StarHalfIcon from '@mui/icons-material/StarHalf';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 const Modal = styled.div`
   position: fixed;
@@ -19,7 +22,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.background};
   padding: 20px;
   border-radius: 10px;
   display: flex;
@@ -119,8 +122,8 @@ const Titulo = styled.h2`
 `;
 
 const Qtd = styled.p`
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: normal;
   margin: 0;
   margin-top: auto;
 `;
@@ -129,7 +132,6 @@ const Preco = styled.p`
   font-size: 42px;
   font-weight: 300;
   margin: 0;
-  margin-top: auto;
 `;
 
 const Un = styled.span`
@@ -145,7 +147,22 @@ const ButtonContainer = styled.div`
   margin-left: auto;
 `;
 
-interface VisualizarModalProps {
+const FullStar = styled(StarIcon)`
+  color: #FFD700;
+  font-size: 42px;
+`;
+
+const HalfStar = styled(StarHalfIcon)`
+  color: #FFD700;
+  font-size: 42px;
+`;
+
+const EmptyStar = styled(StarBorderIcon)`
+  color: #FFD700;
+  font-size: 42px;
+`;
+
+interface ModalProdutosProps {
     isOpen: boolean;
     onClose: () => void;
     images: string[];
@@ -156,7 +173,21 @@ interface VisualizarModalProps {
     quantidadeEstoque: string;
 }
 
-export default function VisualizarModal(props: VisualizarModalProps) {
+const renderStars = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const halfStars = Math.ceil(rating % 1);
+  const emptyStars = 5 - Math.ceil(rating);
+
+  return (
+    <>
+      {Array(fullStars).fill(<FullStar />)}
+      {halfStars >= 1 && <HalfStar />}
+      {Array(emptyStars).fill(<EmptyStar />)}
+    </>
+  );
+};
+
+export default function ModalProdutos(props: ModalProdutosProps) {
     const { isOpen, onClose, images, nome, avaliacao, descricao, preco, quantidadeEstoque } = props;
     const [activeSlide, setActiveSlide] = useState(0);
 
@@ -211,11 +242,11 @@ export default function VisualizarModal(props: VisualizarModalProps) {
                     <Details>
                         <DetailsContainer>
                             <Titulo>{nome}</Titulo>
-                            <p style={{ marginTop: '0' }}>{descricao}</p>
+                            <p style={{ margin: '0' }}>{descricao}</p>
                             <Preco>R$ {preco}<Un>(un)</Un></Preco>
                             <p style={{ color: '#6B97D9', margin: '0', fontSize: '14px' }}>Ver meios de pagamento</p>
+                            <p style={{ marginTop: '0' }}>{renderStars(Number(avaliacao))}</p>
                             <Qtd>QUANTIDADE: {quantidadeEstoque}</Qtd>
-                            <p>AVALIAÇÃO: {avaliacao}</p>
                         </DetailsContainer>
                         <ButtonContainer>
                             <Button variant="contained" color="primary" disabled>Adicionar no carrinho</Button>

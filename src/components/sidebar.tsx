@@ -43,7 +43,13 @@ const Sidebar = () => {
         {isOpen ? <CloseIcon style={{ fontSize: '2rem' }} /> : <MenuIcon style={{ fontSize: '2rem' }} />}
       </MenuButton>
       <Wrapper $isOpen={isOpen}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Logo src={logo} alt="DogHall" />
+        <div>
+        <h1 style={{ margin: '0' }}>PARA</h1>
+        <h1 style={{ margin: '0', paddingBottom: '1rem' }}>PETS</h1>
+        </div>
+        </div>
         {userNickname && userRole && (
           <UserInfo>
             <p>Olá, {userNickname}</p>
@@ -51,11 +57,11 @@ const Sidebar = () => {
           </UserInfo>
         )}
         <Item onClick={() => handleNavigate('/produtos')}>
-          <PetsIcon />Listar Produtos
+          <PetsIcon />Produtos
         </Item>
         {userRole === 'ADMIN' && (
           <Item onClick={() => handleNavigate('/admin/usuarios')}>
-            <PetsIcon />Listar Usuários
+            <PetsIcon />Usuários
           </Item>
         )}
         {(userRole === 'ADMIN' || userRole === 'STOCKIST') && (
@@ -90,12 +96,12 @@ const Logo = styled.img`
 
 const MenuButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
-  background-color: ${({ $isOpen }) => ($isOpen ? 'transparent' : '#f0f0f0')};
+  background-color: ${({ $isOpen }) => ($isOpen ? 'transparent' : '#F5FAFF')};
   box-shadow: ${({ $isOpen }) => ($isOpen ? 'none' : '0 2px 4px rgba(0, 0, 0, 0.1)')};
   padding-top: 0.5rem;
   border: none;
   cursor: pointer;
-  z-index: 998;
+  z-index: 1000;
 
   @media (min-width: 1200px) {
     display: none;
@@ -150,7 +156,7 @@ const LogoutButton = styled.div`
 const Wrapper = styled.div<{ $isOpen: boolean }>`
   user-select: none;
   height: 100%;
-  width: 220px;
+  min-width: 180px;
   display: flex;
   text-align: flex-start;
   flex-direction: column;
@@ -166,6 +172,7 @@ const Wrapper = styled.div<{ $isOpen: boolean }>`
   transition: left 0.3s;
   z-index: 999;
   font-size: 0.9rem;
+  overflow: hidden;
   @media (min-width: 1200px) {
     position: static;
     left: 0;
