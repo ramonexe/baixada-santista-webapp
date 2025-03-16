@@ -37,6 +37,10 @@ const Sidebar = () => {
     navigate('/entrar');
   };
 
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  }
+
   return (
     <>
       <MenuButton onClick={handleToggleSidebar} $isOpen={isOpen}>
@@ -56,11 +60,11 @@ const Sidebar = () => {
             <p>Grupo: {userRole === 'ADMIN' ? 'ADMINISTRADOR' : userRole === 'STOCKIST' ? 'ESTOQUISTA' : 'USUÁRIO'}</p>
           </UserInfo>
         )}
-        <Item onClick={() => handleNavigate('/produtos')}>
+        <Item onClick={() => handleNavigate('/produtos')} active={isActive('/produtos')}>
           <PetsIcon />Produtos
         </Item>
         {userRole === 'ADMIN' && (
-          <Item onClick={() => handleNavigate('/usuarios')}>
+          <Item onClick={() => handleNavigate('/usuarios')} active={isActive('/usuarios')}>
             <PetsIcon />Usuários
           </Item>
         )}
@@ -108,7 +112,7 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   }
 `;
 
-const Item = styled.div`
+const Item = styled.div<{ active: boolean }>`
   padding: 0.5rem;
   border-radius: 0.25rem;
   transition: background-color 0.3s;
@@ -117,11 +121,12 @@ const Item = styled.div`
   display: flex;
   text-align: center;
   width: 100%;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme, active }) => (active ? 'white' : theme.text)};
+  background-color: ${({ theme, active }) => (active ? theme.colors.primary : 'transparent')};
   font-weight: 800;
   gap: 0.5rem;
 
-  &:hover {
+  &:hover, &.active {
     background: ${({ theme }) => theme.colors.primary};
     color: white;
 
@@ -129,6 +134,10 @@ const Item = styled.div`
       transform: scale(1.1) rotate(20deg);
       transition: transform 0.3s;
     }
+  }
+
+  svg {
+    transform: ${({ active }) => (active ? 'scale(1.1) rotate(20deg)' : 'scale(1)')};
   }
 `;
 
